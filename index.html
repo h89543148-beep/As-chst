@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AS Chat v3</title>
+  
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Login/Register Modal -->
+  <div id="auth-modal" style="display:flex; position:fixed; top:0; left:0; width:100%; height:100%; background:#000000ee; z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:#1e293b; padding:30px; border-radius:20px; width:90%; max-width:400px; text-align:center;">
+      <h2 style="color:white; margin-bottom:20px;">Welcome to AS Chat</h2>
+      <input type="email" id="auth-email" placeholder="Email" style="width:100%; padding:12px; margin:10px 0; border-radius:10px; border:none; background:#0f172a; color:white;">
+      <input type="password" id="auth-password" placeholder="Password" style="width:100%; padding:12px; margin:10px 0; border-radius:10px; border:none; background:#0f172a; color:white;">
+      <button onclick="login()" style="width:100%; padding:12px; background:#ff6b35; color:white; border:none; border-radius:10px; font-size:16px; margin:10px 0;">Login</button>
+      <button onclick="register()" style="width:100%; padding:12px; background:transparent; color:#ff6b35; border:2px solid #ff6b35; border-radius:10px; font-size:16px;">Register</button>
+      <p id="auth-error" style="color:#ef476f; margin-top:10px; font-size:14px;"></p>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <span>AS SYSTEM 🟢</span>
+    <button id="theme-toggle" class="theme-btn">🌙</button>
+  </div>
+
+  <div class="chat-area" id="chat-container">
+    <div id="as-response" class="as-bubble">Bhai, main AS hoon. Pucho kya puchna hai!</div>
+    <img id="as-image" src="" alt="AS Image" style="display: none;">
+  </div>
+
+  <div class="input-container">
+    <input type="text" id="user-input" placeholder="AS se pucho...">
+    <button id="mic-btn" class="icon-btn">🎤</button>
+    <button id="send-btn" class="send-btn">Pucho</button>
+    <button id="upload-btn" class="icon-btn">📎</button>
+  </div>
+
+  <input type="file" id="file-upload" accept=".txt,.pdf" style="display:none;">
+
+  <!-- Scripts in Correct Order -->
+  <script src="config/firebase.js"></script>
+  <script src="api.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
