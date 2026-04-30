@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${API_KEYS.GROQ}`,
+        "Authorization": `Bearer ${. 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}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
