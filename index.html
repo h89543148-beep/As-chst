@@ -2,26 +2,50 @@
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AS Chat v3</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AS Chat</title>
   
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+  <!-- 🔴 बस यहाँ अपना api.html का लिंक डालो -->
+  <script src="https://lucent-klepon-a1829f.netlify.app/api.html"></script>
   
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* =============================== */
+    /* AS CHAT - COMPLETE STYLING v2.0 */
+    /* =============================== */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+    body { background: #0f172a; min-height: 100vh; display: flex; flex-direction: column; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: linear-gradient(135deg, #1e293b, #0f172a); color: white; font-size: 20px; font-weight: bold; border-bottom: 2px solid #ff6b35; box-shadow: 0 4px 20px rgba(255, 107, 53, 0.15); }
+    .theme-btn { background: none; border: none; font-size: 24px; cursor: pointer; }
+    .chat-area { flex: 1; padding: 20px 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: linear-gradient(180deg, #0f172a 0%, #1a1a2e 100%); }
+    .user-chat-bubble { background: linear-gradient(135deg, #ff6b35, #e55a2b); color: white; padding: 14px 18px; border-radius: 20px 20px 5px 20px; max-width: 80%; width: fit-content; word-wrap: break-word; font-size: 15px; line-height: 1.6; align-self: flex-end; animation: slideLeft 0.3s ease; }
+    .as-chat-bubble { background: linear-gradient(135deg, #1e293b, #0f172a); color: #e2e8f0; padding: 14px 18px; border-radius: 20px 20px 20px 5px; max-width: 80%; width: fit-content; word-wrap: break-word; font-size: 15px; line-height: 1.6; border: 1px solid #334155; align-self: flex-start; animation: slideRight 0.3s ease; }
+    @keyframes slideLeft { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes slideRight { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+    #as-image { max-width: 100%; border-radius: 15px; margin-top: 15px; }
+    .input-container { display: flex; align-items: center; gap: 8px; padding: 12px 15px; background: #1e293b; border-top: 1px solid #334155; }
+    #user-input { flex: 1; padding: 12px 18px; background: #0f172a; border: 1px solid #334155; border-radius: 30px; font-size: 16px; color: white; outline: none; }
+    .send-btn { padding: 12px 24px; background: linear-gradient(135deg, #ff6b35, #e55a2b); color: white; border: none; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; }
+    #auth-modal { display:flex; position:fixed; top:0; left:0; width:100%; height:100vh; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center; }
+    .modal-box { background:#1e293b; padding:30px; border-radius:20px; width:90%; max-width:360px; text-align:center; border:1px solid #ff6b35; }
+    .modal-input { width:100%; padding:12px; margin:8px 0; border-radius:10px; border:none; background:#0f172a; color:white; }
+    .btn-primary { width:100%; padding:12px; background:#ff6b35; color:white; border:none; border-radius:10px; font-size:16px; margin:10px 0; cursor:pointer; }
+    .btn-secondary { width:100%; padding:12px; background:transparent; color:#ff6b35; border:2px solid #ff6b35; border-radius:10px; font-size:16px; cursor:pointer; width:100%25; }
+  </style>
 </head>
 <body>
 
-  <!-- Login/Register Modal -->
-  <div id="auth-modal" style="display:flex; position:fixed; top:0; left:0; width:100%; height:100%; background:#000000ee; z-index:9999; justify-content:center; align-items:center;">
-    <div style="background:#1e293b; padding:30px; border-radius:20px; width:90%; max-width:400px; text-align:center;">
+  <div id="auth-modal">
+    <div class="modal-box">
       <h2 style="color:white; margin-bottom:20px;">Welcome to AS Chat</h2>
-      <input type="email" id="auth-email" placeholder="Email" style="width:100%; padding:12px; margin:10px 0; border-radius:10px; border:none; background:#0f172a; color:white;">
-      <input type="password" id="auth-password" placeholder="Password" style="width:100%; padding:12px; margin:10px 0; border-radius:10px; border:none; background:#0f172a; color:white;">
-      <button onclick="login()" style="width:100%; padding:12px; background:#ff6b35; color:white; border:none; border-radius:10px; font-size:16px; margin:10px 0;">Login</button>
-      <button onclick="register()" style="width:100%; padding:12px; background:transparent; color:#ff6b35; border:2px solid #ff6b35; border-radius:10px; font-size:16px;">Register</button>
+      <input type="email" id="auth-email" placeholder="Email" class="modal-input" autocomplete="email">
+      <input type="password" id="auth-password" placeholder="Password" class="modal-input" autocomplete="current-password">
+      <button onclick="login()" class="btn-primary">Login</button>
+      <button onclick="register()" class="btn-secondary">Register</button>
       <p id="auth-error" style="color:#ef476f; margin-top:10px; font-size:14px;"></p>
     </div>
   </div>
@@ -32,22 +56,94 @@
   </div>
 
   <div class="chat-area" id="chat-container">
-    <div id="as-response" class="as-bubble">Bhai, main AS hoon. Pucho kya puchna hai!</div>
-    <img id="as-image" src="" alt="AS Image" style="display: none;">
+    <div id="as-response" class="as-chat-bubble">Bhai, main AS hoon. Pucho kya puchna hai!</div>
+    <!-- 🔴 बस यहाँ भी अपना api.html का लिंक डालो -->
+    <img id="as-image" src="https://lucent-klepon-a1829f.netlify.app/api.html" alt="AS Image" style="display: none;">
   </div>
 
   <div class="input-container">
     <input type="text" id="user-input" placeholder="AS se pucho...">
-    <button id="mic-btn" class="icon-btn">🎤</button>
     <button id="send-btn" class="send-btn">Pucho</button>
-    <button id="upload-btn" class="icon-btn">📎</button>
   </div>
 
-  <input type="file" id="file-upload" accept=".txt,.pdf" style="display:none;">
+  <script>
+    // Firebase Config
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyD7RwL8kwQ91P1vcPhXnxFNFIDQsWdUfhE",
+      authDomain: "ad-hoc-d078c.firebaseapp.com",
+      projectId: "ad-hoc-d078c",
+      storageBucket: "ad-hoc-d078c.firebasestorage.app",
+      messagingSenderId: "485452494263",
+      appId: "1:485452494263:web:038a30628b871f3d7a6432"
+    };
+    firebase.initializeApp(FIREBASE_CONFIG);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
 
-  <!-- Scripts in Correct Order -->
-  <script src="firebase.js"></script>
-<script src="https://bright-lokum-10be5f.netlify.app/api.html"></script>
-  <script src="script.js"></script>
+    window.login = async function() {
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-password').value;
+      const errorEl = document.getElementById('auth-error');
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+      } catch (e) { errorEl.textContent = e.message; }
+    };
+
+    window.register = async function() {
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-password').value;
+      const errorEl = document.getElementById('auth-error');
+      try {
+        await auth.createUserWithEmailAndPassword(email, password);
+      } catch (e) { errorEl.textContent = e.message; }
+    };
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById('auth-modal').style.display = 'none';
+      } else {
+        document.getElementById('auth-modal').style.display = 'flex';
+      }
+    });
+
+    // Chat Logic
+    const box = document.getElementById("user-input");
+    const btn = document.getElementById("send-btn");
+    const chatArea = document.getElementById("chat-container");
+
+    function renderMessage(role, content) {
+      const bubble = document.createElement("div");
+      bubble.className = role === "user" ? "user-chat-bubble" : "as-chat-bubble";
+      bubble.innerHTML = role === "user" ? "<strong>Tum:</strong> " + content : "<strong>AS:</strong> " + content;
+      chatArea.appendChild(bubble);
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    async function askAI(sawal) {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + API_KEYS.GROQ, "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "llama-3.1-8b-instant", messages: [{ role: "user", content: sawal }] })
+      });
+      const data = await res.json();
+      return data.choices[0].message.content;
+    }
+
+    btn.onclick = async function () {
+      let input = box.value.trim();
+      if (!input) return;
+      renderMessage("user", input);
+      box.value = "";
+      const aiDiv = document.createElement("div");
+      aiDiv.className = "as-chat-bubble";
+      aiDiv.innerHTML = "<strong>AS:</strong> Soch raha hoon...";
+      chatArea.appendChild(aiDiv);
+      let jawab = "Bhai jawab nahi aa paya.";
+      try { jawab = await askAI(input); } catch(e) {}
+      aiDiv.innerHTML = "<strong>AS:</strong> " + jawab;
+    };
+
+    box.addEventListener("keypress", (e) => { if (e.key === "Enter") btn.click(); });
+  </script>
 </body>
 </html>
